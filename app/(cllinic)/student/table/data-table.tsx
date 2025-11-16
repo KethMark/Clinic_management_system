@@ -34,6 +34,9 @@ import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTablePagination } from "./data-table-pagination";
 import { AddMedicalModal } from "@/components/addMedical";
 import { AddConsultationModal } from "@/components/addConsultation";
+import { Consultation, Medicine } from "@/types";
+import { ViewMedicalModal } from "@/components/viewMedical";
+import { ViewConsultationModal } from "@/components/viewConsultation";
 
 export interface DataTableMeta<TData> {
   editingRowId: string | null;
@@ -44,7 +47,9 @@ export interface DataTableMeta<TData> {
   updateEditedRowData: (rowId: string, columnId: string, value: string) => void;
   editedRowData: Record<string, Partial<TData>>;
   onAddMedical: (student: TData) => void;
-  onConsultation: (student: TData) => void;
+  onAddConsultation: (student: TData) => void;
+  onViewMedical: (medicines: Medicine[]) => void;
+  onViewConsultation: (consultations: Consultation[]) => void;
 }
 
 interface DataTableProps<TData, TValue> {
@@ -73,18 +78,27 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
   const [isAddMedicalModalOpen, setIsAddMedicalModalOpen] =
     React.useState(false);
 
-  const [selectedStudentMedical, setSelectedStudentMedical] = React.useState<TData | null>(
-    null
-  );
+  const [selectedStudentMedical, setSelectedStudentMedical] =
+    React.useState<TData | null>(null);
 
   //handle consultation
   const [isAddConsultationModalOpen, setIsAddConsultationModalOpen] =
     React.useState(false);
 
+  const [selectedStudentConsultation, setSelectedStudentConsultation] =
+    React.useState<TData | null>(null);
 
-  const [selectedStudentConsultation, setSelectedStudentConsultation] = React.useState<TData | null>(
-    null
-  );
+  //handle view medical
+  const [isViewMedicalModalOpen, setIsViewMedicalModalOpen] = React.useState(false);
+
+  const [selectedMedicines, setSelectedMedicines] = 
+    React.useState<Medicine[]>([]);
+
+  //handle view consultation
+  const [isViewConsultationModalOpen, setIsViewConsultationModalOpen] = React.useState(false);
+
+  const [selectedConsultations, setSelectedConsultations] = 
+    React.useState<Consultation[]>([]);
 
   const queryClient = useQueryClient();
 
@@ -176,9 +190,19 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
         setIsAddMedicalModalOpen(true);
       },
 
-      onConsultation(student) {
-        setSelectedStudentConsultation(student)
-        setIsAddConsultationModalOpen(true)
+      onAddConsultation(student) {
+        setSelectedStudentConsultation(student);
+        setIsAddConsultationModalOpen(true);
+      },
+
+      onViewMedical: (medicines) => {
+        setSelectedMedicines(medicines);
+        setIsViewMedicalModalOpen(true);
+      },
+
+      onViewConsultation: (consultations) => {
+        setSelectedConsultations(consultations);
+        setIsViewConsultationModalOpen(true);
       },
     } as DataTableMeta<TData>,
   });
@@ -239,6 +263,7 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
         </div>
         <DataTablePagination table={table} />
       </div>
+
       {selectedStudentMedical && (
         <AddMedicalModal
           student={selectedStudentMedical}
@@ -249,7 +274,7 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
           }}
         />
       )}
-      
+
       {selectedStudentConsultation && (
         <AddConsultationModal
           student={selectedStudentConsultation}
@@ -257,6 +282,28 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
           onClose={() => {
             setIsAddConsultationModalOpen(false);
             setSelectedStudentConsultation(null);
+          }}
+        />
+      )}
+
+      {selectedMedicines && (
+        <ViewMedicalModal
+          medicines={selectedMedicines}
+          isOpen={isViewMedicalModalOpen}
+          onClose={() => {
+            setIsViewMedicalModalOpen(false);
+            setSelectedMedicines([]);
+          }}
+        />
+      )}
+
+      {selectedConsultations && (
+        <ViewConsultationModal
+          consultations={selectedConsultations}
+          isOpen={isViewConsultationModalOpen}
+          onClose={() => {
+            setIsViewConsultationModalOpen(false);
+            setSelectedConsultations([]);
           }}
         />
       )}

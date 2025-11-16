@@ -47,7 +47,7 @@ const consultationFormSchema = z.object({
   notes: z.string().optional(),
 });
 
-type ConsultationFormValues = z.infer<typeof consultationFormSchema>;
+export type ConsultationFormValues = z.infer<typeof consultationFormSchema>;
 
 export function AddConsultationModal({
   student,
@@ -83,7 +83,7 @@ export function AddConsultationModal({
     },
     onSuccess: () => {
       form.reset();
-      queryClient.invalidateQueries({ queryKey: ["Consultations"] });
+      queryClient.invalidateQueries({ queryKey: ["consultations"] });
       onClose();
     },
   });

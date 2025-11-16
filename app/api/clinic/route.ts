@@ -59,7 +59,7 @@ export async function GET() {
   if (!data || !data.user || !data.user.id) {
     return NextResponse.json(
       { error: "User not authenticated" },
-      { status: 500 }
+      { status: 400 }
     );
   }
 

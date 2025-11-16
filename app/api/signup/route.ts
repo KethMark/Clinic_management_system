@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     if (existingUser.length > 0) {
       return NextResponse.json(
         { success: false, message: "User Email Already exist" },
-        { status: 500 }
+        { status: 400 }
       );
     }
 
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     console.log(error, "Signup error");
     return NextResponse.json(
       { success: false, message: "Signup error" },
-      { status: 500 }
+      { status: 400 }
     );
   }
 }

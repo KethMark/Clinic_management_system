@@ -12,11 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DataTableMeta } from "./data-table";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { toast } from "sonner";
 import z from "zod";
 import { studentSchema } from "@/components/dashboard";
+import { Consultation, Medicine } from "@/types";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,6 +33,25 @@ export function DataTableRowActions<TData extends z.infer<typeof studentSchema>>
 
   const isEditing = meta.editingRowId === row.id;
   const student = row.original;
+
+  const { data: medicines } = useQuery({
+    queryKey: ["medicines", student.id],
+    queryFn: async (): Promise<Medicine[]> => {
+      const res = await axios.get(`/api/medicines/${student.id}`);
+      return res.data;
+    },
+  });
+
+  const { data: consultations } = useQuery({
+    queryKey: ["consultations", student.id],
+    queryFn: async (): Promise<Consultation[]>=> {
+      const res = await axios.get(`/api/consultations/${student.id}`);
+      return res.data;
+    },
+  });
+
+  const hasMedicines = medicines && medicines.length > 0;
+  const hasConsultations = consultations && consultations.length > 0;
 
   const { mutateAsync } = useMutation({
     mutationFn: async (data: Pick<z.infer<typeof studentSchema>, "id">) => {
@@ -92,12 +112,31 @@ export function DataTableRowActions<TData extends z.infer<typeof studentSchema>>
             <DropdownMenuItem onSelect={() => meta.onEdit(row)}>
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => meta.onAddMedical(student)}>
-              Add Medical
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => meta.onConsultation(student)}>
-              Add Consultation
-            </DropdownMenuItem>
+            
+            {!hasMedicines && (
+              <DropdownMenuItem onSelect={() => meta.onAddMedical(student)}>
+                Add Medical
+              </DropdownMenuItem>
+            )}
+            
+            {hasMedicines && (
+              <DropdownMenuItem onSelect={() => meta.onViewMedical(medicines)}>
+                View Medical 
+              </DropdownMenuItem>
+            )}
+            
+            {!hasConsultations && (
+              <DropdownMenuItem onSelect={() => meta.onAddConsultation(student)}>
+                Add Consultation
+              </DropdownMenuItem>
+            )}
+            
+            {hasConsultations && (
+              <DropdownMenuItem onSelect={() => meta.onViewConsultation(consultations)}>
+                View Consultation 
+              </DropdownMenuItem>
+            )}
+            
             <DropdownMenuSeparator />
             <DropdownMenuItem variant="destructive" onClick={handleDelete}>
               Delete

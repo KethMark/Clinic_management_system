@@ -23,7 +23,7 @@ export async function POST(req: Request) {
           message: error.message,
         },
         {
-          status: 500,
+          status: 400,
         }
       );
     }

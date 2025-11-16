@@ -18,7 +18,7 @@ export function NavUser() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton tooltip="Logout" asChild size="sm">
-          <button onClick={onSignOut} disabled>
+          <button onClick={onSignOut}>
             <LogOut />
             <span>Logout</span>
           </button>

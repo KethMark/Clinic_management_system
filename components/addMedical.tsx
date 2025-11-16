@@ -56,7 +56,7 @@ const medicineFormSchema = z.object({
   description: z.string().optional(),
 });
 
-type MedicineFormValues = z.infer<typeof medicineFormSchema>;
+export type MedicineFormValues = z.infer<typeof medicineFormSchema>;
 
 export function AddMedicalModal({
   student,
@@ -92,7 +92,7 @@ export function AddMedicalModal({
     },
     onSuccess: () => {
       form.reset();
-      queryClient.invalidateQueries({ queryKey: ["Medicines"] });
+      queryClient.invalidateQueries({ queryKey: ["medicines"] });
       onClose();
     },
   });
@@ -156,7 +156,7 @@ export function AddMedicalModal({
                   <FormItem className="flex-1">
                     <FormLabel>Quantity</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input type="number" placeholder="e.g., 0" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
