@@ -1,7 +1,6 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import z from "zod";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { Input } from "@/components/ui/input";
 import { DataTableMeta } from "./data-table";
@@ -12,7 +11,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { studentSchema } from "@/components/dashboard";
 import { StudentGender } from "./data/data";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableRowActions } from "./data-table-row-actions";
@@ -22,8 +20,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { StudentFormValues } from "@/types";
+import { DataTableRowActions2 } from "./data-table-row-actions2";
 
-export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
+export const columns: ColumnDef<StudentFormValues>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -58,7 +58,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     header: "Full Name",
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -83,7 +83,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     header: "Grade",
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -106,7 +106,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     header: "Section",
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -129,7 +129,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     header: "Age",
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -154,7 +154,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     ),
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -200,7 +200,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     header: "Blood Type",
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -280,7 +280,7 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
     header: "Emergency Contact",
     cell: ({ row, table, column }) => {
       const meta = table.options.meta as DataTableMeta<
-        z.infer<typeof studentSchema>
+        StudentFormValues
       >;
       const isEditing = meta.editingRowId === row.id;
 
@@ -300,9 +300,12 @@ export const columns: ColumnDef<z.infer<typeof studentSchema>>[] = [
       );
     },
   },
-
   {
     id: "actions",
     cell: ({ row, table }) => <DataTableRowActions row={row} table={table} />,
   },
+  {
+    id: "actions-secondary",
+    cell: ({ row }) => <DataTableRowActions2 row={row}/>
+  }
 ];

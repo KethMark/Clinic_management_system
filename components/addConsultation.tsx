@@ -1,6 +1,5 @@
 "use client";
 
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -33,28 +32,16 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { studentSchema } from "@/components/dashboard";
 import { Textarea } from "./ui/textarea";
 import { Input } from "@/components/ui/input";
-
-const consultationFormSchema = z.object({
-  date: z.date({ message: "Date is required" }),
-  symptoms: z.string().optional(),
-  diagnosis: z.string().optional(),
-  treatmentGiven: z.string().optional(),
-  medRxDispensed: z.string().optional(),
-  attendingStaff: z.string().optional(),
-  notes: z.string().optional(),
-});
-
-export type ConsultationFormValues = z.infer<typeof consultationFormSchema>;
+import { consultationFormSchema, ConsultationFormValues, StudentFormValues } from "@/types";
 
 export function AddConsultationModal({
   student,
   isOpen,
   onClose,
 }: {
-  student: z.infer<typeof studentSchema>;
+  student: StudentFormValues;
   isOpen: boolean;
   onClose: () => void;
 }) {

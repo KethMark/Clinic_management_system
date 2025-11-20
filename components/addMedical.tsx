@@ -1,6 +1,5 @@
 "use client";
 
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,30 +39,16 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils"; 
-import { studentSchema } from "@/components/dashboard"; 
+import { cn } from "@/lib/utils";
 import { Textarea } from "./ui/textarea";
-
-const medicineFormSchema = z.object({
-  medicineFullName: z.string().min(1, "Medicine name is required"),
-  type: z.string().optional(),
-  quantity: z.string().min(0, "Quantity must be 0 or more"),
-  unit: z.string().optional(),
-  expiresDate: z.date().optional(),
-  status: z
-    .enum(["Active", "Expired", "Used", "Unavailable"])
-    .default("Active"),
-  description: z.string().optional(),
-});
-
-export type MedicineFormValues = z.infer<typeof medicineFormSchema>;
+import { medicineFormSchema, MedicineFormValues, StudentFormValues } from "@/types";
 
 export function AddMedicalModal({
   student,
   isOpen,
   onClose,
 }: {
-  student: z.infer<typeof studentSchema>;
+  student: StudentFormValues;
   isOpen: boolean;
   onClose: () => void;
 }) {

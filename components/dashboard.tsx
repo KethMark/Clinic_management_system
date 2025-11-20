@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
@@ -31,33 +30,7 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import axios from "axios";
-
-export const studentSchema = z.object({
-  id: z.string().optional(),
-  fullName: z
-    .string()
-    .min(2, { message: "Name must be at least 2 characters long." }),
-  grade: z.string().min(1, "Grade is required."),
-  section: z.string().min(1, "Section is required."),
-  age: z
-    .string()
-    .min(1, { message: "Age is required" })
-    .regex(/^\d+$/, { message: "Age must be a valid number" })
-    .refine(
-      (val) => {
-        const num = parseInt(val, 10);
-        return num > 0 && num < 150;
-      },
-      {
-        message: "Age must be between 1 and 149",
-      }
-    ),
-  gender: z.string().min(4, "Gender is required."),
-  bloodType: z.string().optional(),
-  allergies: z.string().optional(),
-  medicalHistory: z.string().optional(),
-  emergencyContact: z.string().optional(),
-});
+import { StudentFormValues, studentSchema } from "@/types";
 
 export default function StudentForm() {
   const queryClient = useQueryClient();
@@ -77,7 +50,7 @@ export default function StudentForm() {
   });
 
   const mutation = useMutation({
-    mutationFn: async (data: z.infer<typeof studentSchema>) => {
+    mutationFn: async (data: StudentFormValues) => {
       const payload = {
         ...data,
         age: parseInt(data.age, 10),
@@ -92,7 +65,7 @@ export default function StudentForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof studentSchema>) {
+  function onSubmit(values: StudentFormValues) {
     toast.promise(mutation.mutateAsync(values), {
       loading: "Submitting...",
       success: (data) => data.message,
@@ -107,11 +80,9 @@ export default function StudentForm() {
       <CardHeader>
         <CardTitle>Student Information</CardTitle>
       </CardHeader>
-
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-            {/* Full Name */}
             <FormField
               control={form.control}
               name="fullName"
@@ -126,7 +97,6 @@ export default function StudentForm() {
               )}
             />
 
-            {/* Grade & Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -157,7 +127,6 @@ export default function StudentForm() {
               />
             </div>
 
-            {/* Age & Gender */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
@@ -200,7 +169,6 @@ export default function StudentForm() {
               />
             </div>
 
-            {/* Blood Type */}
             <FormField
               control={form.control}
               name="bloodType"
@@ -215,7 +183,6 @@ export default function StudentForm() {
               )}
             />
 
-            {/* Allergies */}
             <FormField
               control={form.control}
               name="allergies"
@@ -230,7 +197,6 @@ export default function StudentForm() {
               )}
             />
 
-            {/* Medical History */}
             <FormField
               control={form.control}
               name="medicalHistory"
@@ -245,7 +211,6 @@ export default function StudentForm() {
               )}
             />
 
-            {/* Emergency Contact */}
             <FormField
               control={form.control}
               name="emergencyContact"

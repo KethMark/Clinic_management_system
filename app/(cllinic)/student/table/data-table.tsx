@@ -25,18 +25,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import z from "zod";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { studentSchema } from "@/components/dashboard";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { DataTablePagination } from "./data-table-pagination";
 import { AddMedicalModal } from "@/components/addMedical";
 import { AddConsultationModal } from "@/components/addConsultation";
-import { Consultation, Medicine } from "@/types";
-import { ViewMedicalModal } from "@/components/viewMedical";
-import { ViewConsultationModal } from "@/components/viewConsultation";
+import { StudentFormValues } from "@/types";
 
 export interface DataTableMeta<TData> {
   editingRowId: string | null;
@@ -48,8 +44,6 @@ export interface DataTableMeta<TData> {
   editedRowData: Record<string, Partial<TData>>;
   onAddMedical: (student: TData) => void;
   onAddConsultation: (student: TData) => void;
-  onViewMedical: (medicines: Medicine[]) => void;
-  onViewConsultation: (consultations: Consultation[]) => void;
 }
 
 interface DataTableProps<TData, TValue> {
@@ -57,7 +51,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
+export function DataTable<TData extends StudentFormValues, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -88,23 +82,11 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
   const [selectedStudentConsultation, setSelectedStudentConsultation] =
     React.useState<TData | null>(null);
 
-  //handle view medical
-  const [isViewMedicalModalOpen, setIsViewMedicalModalOpen] = React.useState(false);
-
-  const [selectedMedicines, setSelectedMedicines] = 
-    React.useState<Medicine[]>([]);
-
-  //handle view consultation
-  const [isViewConsultationModalOpen, setIsViewConsultationModalOpen] = React.useState(false);
-
-  const [selectedConsultations, setSelectedConsultations] = 
-    React.useState<Consultation[]>([]);
-
   const queryClient = useQueryClient();
 
   const { mutateAsync } = useMutation({
     mutationKey: ["student"],
-    mutationFn: async (data: z.infer<typeof studentSchema>) => {
+    mutationFn: async (data: StudentFormValues) => {
       const res = await axios
         .put(`/api/clinic/${data.id}`, data)
         .then((res) => res.data);
@@ -194,16 +176,6 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
         setSelectedStudentConsultation(student);
         setIsAddConsultationModalOpen(true);
       },
-
-      onViewMedical: (medicines) => {
-        setSelectedMedicines(medicines);
-        setIsViewMedicalModalOpen(true);
-      },
-
-      onViewConsultation: (consultations) => {
-        setSelectedConsultations(consultations);
-        setIsViewConsultationModalOpen(true);
-      },
     } as DataTableMeta<TData>,
   });
 
@@ -282,28 +254,6 @@ export function DataTable<TData extends z.infer<typeof studentSchema>, TValue>({
           onClose={() => {
             setIsAddConsultationModalOpen(false);
             setSelectedStudentConsultation(null);
-          }}
-        />
-      )}
-
-      {selectedMedicines && (
-        <ViewMedicalModal
-          medicines={selectedMedicines}
-          isOpen={isViewMedicalModalOpen}
-          onClose={() => {
-            setIsViewMedicalModalOpen(false);
-            setSelectedMedicines([]);
-          }}
-        />
-      )}
-
-      {selectedConsultations && (
-        <ViewConsultationModal
-          consultations={selectedConsultations}
-          isOpen={isViewConsultationModalOpen}
-          onClose={() => {
-            setIsViewConsultationModalOpen(false);
-            setSelectedConsultations([]);
           }}
         />
       )}

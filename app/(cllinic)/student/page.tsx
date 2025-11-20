@@ -1,17 +1,16 @@
 "use client";
 
-import { studentSchema } from "@/components/dashboard";
 import { Spinner } from "@/components/ui/spinner";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import z from "zod";
 import { DataTable } from "./table/data-table";
 import { columns } from "./table/columns";
+import { StudentFormValues } from "@/types";
 
 const Page = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["Clinic"],
-    queryFn: async (): Promise<z.infer<typeof studentSchema>[]> => {
+    queryFn: async (): Promise<StudentFormValues[]> => {
       const res = await axios.get("/api/clinic").then((res) => res.data);
       return res;
     },
