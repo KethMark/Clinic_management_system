@@ -49,6 +49,7 @@ export const Consultations = ({ data }: ConsultationsProps) => {
                 <TableHead>Treatment</TableHead>
                 <TableHead>MedRxDispensed</TableHead>
                 <TableHead>Notes</TableHead>
+                <TableHead>Created</TableHead>
                 <TableHead className="text-right">Attending</TableHead>
               </TableRow>
             </TableHeader>
@@ -73,6 +74,9 @@ export const Consultations = ({ data }: ConsultationsProps) => {
                   <TableCell className="max-w-[200px] truncate">
                     {consult.notes || "-"}
                   </TableCell>
+                  {consult.createdAt
+                      ? new Date(consult.createdAt).toLocaleDateString()
+                      : "N/A"}
                   <TableCell className="text-right">
                     {consult.attendingStaff || "Unknown"}
                   </TableCell>

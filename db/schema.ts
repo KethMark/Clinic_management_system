@@ -127,3 +127,5 @@ export const consultations = mysqlTable("consultations", {
 
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+

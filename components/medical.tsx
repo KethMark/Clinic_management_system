@@ -49,6 +49,7 @@ export const Medical = ({ data }: MedicalProps) => {
                 <TableHead>Qty / Unit</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Description</TableHead>
+                <TableHead>Created</TableHead>
                 <TableHead className="text-right">Expiry</TableHead>
               </TableRow>
             </TableHeader>
@@ -74,6 +75,7 @@ export const Medical = ({ data }: MedicalProps) => {
                     </span>
                   </TableCell>
                   <TableCell>{med.description}</TableCell>
+                  <TableCell>{med.createdAt}</TableCell>
                   <TableCell className="text-right">
                     {med.expiresDate
                       ? new Date(med.expiresDate).toLocaleDateString()
